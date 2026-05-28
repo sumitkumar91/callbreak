@@ -10,13 +10,13 @@
   --accent-glow: rgba(16, 185, 129, 0.5);
   
   /* Mobile default sizing */
-  --card-width: 45px;
-  --card-height: 65px;
-  --overlap-x: -32px;
+  --card-width: 50px;
+  --card-height: 72px;
+  --overlap-x: -25px;
   --bot-overlap-x: -15px;
   --bot-overlap-y: -20px;
   --trick-radius: 40px;
-  --card-font-small: 0.75rem;
+  --card-font-small: 0.85rem;
   --card-font-large: 1.2rem;
   
   --glass-bg: rgba(17, 24, 39, 0.7);
