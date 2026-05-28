@@ -1,16 +1,26 @@
-# React + Vite
+# Call Break - Single Player Web Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sleek, responsive, and fully-featured single-player implementation of the classic trick-taking card game **Call Break**. Play against three intelligent AI opponents directly in your web browser.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Progressive Web App (PWA)**: Installable on iOS and Android devices for a native app-like experience.
+- **Intelligent AI Bots**: Bots analyze their hands to make realistic bids and play strategic cards during tricks.
+- **Mobile-First Responsive Design**: Flawlessly adapts to phone, tablet, and desktop screens.
+- **Rich UI & Animations**: Built with a premium "dark casino" aesthetic featuring glassmorphism elements, dynamic glowing indicators, and smooth card dealing/playing micro-animations.
+- **Strict Rule Enforcement**: Visual pop-outs clearly indicate which cards are valid to play on your turn based on official Call Break rules.
 
-## React Compiler
+## Official Game Rules Implemented
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The game consists of **5 rounds** played with a standard 52-card deck.
 
-## Expanding the ESLint configuration
+1. **Bidding**: At the start of each round, players review their 13 cards and "bid" the number of tricks they expect to win (minimum of 1).
+2. **Gameplay & Following Suit**: 
+   - You **must** follow the lead suit if you have a card of that suit.
+   - If you do not have the lead suit, you **must** play a Spade (the permanent trump/wildcard) if you have one to try and win the trick.
+   - If you have neither the lead suit nor any Spades, you may discard any card.
+3. **Winning Tricks**: A trick is won by the highest Spade played. If no Spades are played, the trick is won by the highest card of the lead suit.
+4. **Scoring**: 
+   - If a player wins fewer tricks than they bid, they lose points equal to their bid (e.g., bidding 3 and winning 2 results in -3 points).
+   - If a player meets their bid, they get their bid value in points. Overtricks award 0.1 points each (e.g., bidding 3 and winning 4 results in 3.1 points).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
