@@ -5,21 +5,25 @@ export const isValidPlay = (card, currentTrickCards, playerHand) => {
   // If first to play, any card is valid
   if (currentTrickCards.length === 0) return true;
 
-  const leadSuit = currentTrickCards[0].suit;
+  const leadSuit = currentTrickCards[0].card.suit;
   
   // Does the player have the lead suit?
   const hasLeadSuit = playerHand.some(c => c.suit === leadSuit);
 
   if (hasLeadSuit) {
     // Must follow suit
-    if (card.suit === leadSuit) {
-      return true;
-    } else {
-      return false; // Invalid: Has lead suit but didn't play it
-    }
+    return card.suit === leadSuit;
   }
 
-  // If player doesn't have the lead suit, they can play any card (trump or discard)
+  // If player doesn't have the lead suit, check if they have a Spade
+  const hasSpade = playerHand.some(c => c.suit === 'Spades');
+
+  if (hasSpade) {
+    // Must play a spade if they have one
+    return card.suit === 'Spades';
+  }
+
+  // If they have neither the lead suit nor spades, they can play any card
   return true;
 };
 

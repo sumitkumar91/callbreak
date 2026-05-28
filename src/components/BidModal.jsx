@@ -9,7 +9,7 @@ const BidModal = () => {
   const humanHand = hands['p1'] || [];
 
   return (
-    <div className="overlay">
+    <div className="overlay bid-overlay">
       <div className="modal glass-panel animate-fade-in">
         <h2>Place Your Bid</h2>
         <p style={{ marginBottom: '20px', color: 'var(--text-muted)' }}>

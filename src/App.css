@@ -154,6 +154,7 @@
 
 .player-hand .playing-card.playable {
   animation: pulseGlow 2s infinite;
+  transform: translateY(-15px);
 }
 
 .card-top-left {
@@ -198,6 +199,13 @@
   align-items: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
+}
+
+.bid-overlay {
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: none;
+  align-items: flex-start;
+  padding-top: 20vh; /* Pushes the modal up so it doesn't block the cards at the bottom */
 }
 
 .modal {
