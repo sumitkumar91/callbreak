@@ -9,8 +9,15 @@
   --accent: #10b981;
   --accent-glow: rgba(16, 185, 129, 0.5);
   
-  --card-width: 80px;
-  --card-height: 112px;
+  /* Mobile default sizing */
+  --card-width: 45px;
+  --card-height: 65px;
+  --overlap-x: -32px;
+  --bot-overlap-x: -15px;
+  --bot-overlap-y: -20px;
+  --trick-radius: 40px;
+  --card-font-small: 0.75rem;
+  --card-font-large: 1.2rem;
   
   --glass-bg: rgba(17, 24, 39, 0.7);
   --glass-border: rgba(255, 255, 255, 0.1);
@@ -19,8 +26,27 @@
 
 @media (min-width: 768px) {
   :root {
+    --card-width: 80px;
+    --card-height: 112px;
+    --overlap-x: -55px;
+    --bot-overlap-x: -30px;
+    --bot-overlap-y: -50px;
+    --trick-radius: 60px;
+    --card-font-small: 1.2rem;
+    --card-font-large: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
     --card-width: 100px;
     --card-height: 140px;
+    --overlap-x: -70px;
+    --bot-overlap-x: -40px;
+    --bot-overlap-y: -60px;
+    --trick-radius: 80px;
+    --card-font-small: 1.4rem;
+    --card-font-large: 3rem;
   }
 }
 

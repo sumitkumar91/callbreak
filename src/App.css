@@ -5,7 +5,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px;
+  overflow: hidden;
 }
 
 /* Layout */
@@ -13,7 +14,13 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: 20vh;
+  height: 25vh;
+  padding-top: 50px; /* Space for HUD on mobile */
+}
+
+@media (min-width: 768px) {
+  .top-section { padding-top: 20px; }
+  .app-container { padding: 20px; }
 }
 
 .middle-section {
@@ -21,15 +28,17 @@
   justify-content: space-between;
   align-items: center;
   height: 40vh;
-  padding: 0 20px;
+  padding: 0;
+  width: 100%;
 }
 
 .bottom-section {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  height: 30vh;
+  height: 35vh;
   position: relative;
+  padding-bottom: 20px;
 }
 
 /* Table / Trick Area */
@@ -38,8 +47,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
-  height: 400px;
+  width: min(80vw, 350px);
+  height: min(80vw, 350px);
   border-radius: 50%;
   border: 2px dashed var(--felt-border);
   display: flex;
@@ -63,17 +72,16 @@
   z-index: 10;
 }
 
-.played-card.p1 { transform: translateY(60px); }
-.played-card.b1 { transform: translateX(-60px) rotate(90deg); }
-.played-card.b2 { transform: translateY(-60px); }
-.played-card.b3 { transform: translateX(60px) rotate(-90deg); }
+.played-card.p1 { transform: translateY(var(--trick-radius)); z-index: 14; }
+.played-card.b1 { transform: translateX(calc(var(--trick-radius) * -1)) rotate(90deg); z-index: 11; }
+.played-card.b2 { transform: translateY(calc(var(--trick-radius) * -1)); z-index: 12; }
+.played-card.b3 { transform: translateX(var(--trick-radius)) rotate(-90deg); z-index: 13; }
 
 /* Hands */
 .hand-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: -40px; /* Overlap cards */
 }
 
 .hand-container.horizontal {
@@ -82,29 +90,33 @@
 
 .hand-container.vertical {
   flex-direction: column;
-  gap: -70px;
 }
 
 .bot-hand .card-back {
   width: calc(var(--card-width) * 0.7);
   height: calc(var(--card-height) * 0.7);
   background: linear-gradient(135deg, #1e3a8a, #172554);
-  border: 2px solid #fff;
-  border-radius: 8px;
+  border: 1px solid #fff;
+  border-radius: 4px;
   background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px);
   box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-  margin-left: -30px;
+  margin-left: var(--bot-overlap-x);
 }
+
+.bot-hand.horizontal .card-back:first-child { margin-left: 0; }
 
 .bot-hand.vertical .card-back {
   margin-left: 0;
-  margin-top: -50px;
+  margin-top: var(--bot-overlap-y);
   transform: rotate(90deg);
 }
+.bot-hand.vertical .card-back:first-child { margin-top: 0; }
 
 .player-hand {
   perspective: 1000px;
-  padding-bottom: 20px;
+  width: 100%;
+  max-width: 100vw;
+  justify-content: center;
 }
 
 /* Card Component */
@@ -112,17 +124,18 @@
   width: var(--card-width);
   height: var(--card-height);
   background-color: #fff;
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 8px;
+  padding: 4px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   position: relative;
   user-select: none;
   border: 1px solid #ccc;
-  margin-left: -40px; /* Overlap */
+  margin-left: var(--overlap-x);
   transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
+  flex-shrink: 0;
 }
 
 .playing-card:first-child {
@@ -133,7 +146,7 @@
 .playing-card.Hearts, .playing-card.Diamonds { color: #ef4444; }
 
 .player-hand .playing-card:hover {
-  transform: translateY(-20px) scale(1.05);
+  transform: translateY(-15px) scale(1.05);
   box-shadow: 0 10px 20px rgba(0,0,0,0.3);
   z-index: 100 !important;
   cursor: pointer;
@@ -147,7 +160,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: var(--card-font-small);
   font-weight: bold;
   line-height: 1;
 }
@@ -156,7 +169,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: var(--card-font-small);
   font-weight: bold;
   line-height: 1;
   transform: rotate(180deg);
@@ -167,7 +180,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2.5rem;
+  font-size: var(--card-font-large);
 }
 
 /* Modals & Overlays */
@@ -186,36 +199,49 @@
 }
 
 .modal {
-  padding: 30px;
+  padding: 20px;
   text-align: center;
   max-width: 400px;
   width: 90%;
+  background: var(--glass-bg);
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
 }
 
 .modal h2 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
   color: #fff;
+}
+
+@media (min-width: 768px) {
+  .modal { padding: 30px; }
+  .modal h2 { font-size: 2rem; margin-bottom: 20px; }
 }
 
 .bid-options {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 20px;
 }
 
 .bid-btn {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: rgba(255,255,255,0.1);
   border: 1px solid rgba(255,255,255,0.3);
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   transition: all 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .bid-btn { width: 50px; height: 50px; font-size: 1.2rem; }
+  .bid-options { gap: 10px; }
 }
 
 .bid-btn:hover {
@@ -229,9 +255,8 @@
   color: #fff;
   padding: 12px 24px;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
   transition: all 0.2s ease;
   box-shadow: 0 4px 10px var(--accent-glow);
 }
@@ -244,56 +269,79 @@
 /* HUD / Scoreboard */
 .hud {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  padding: 15px;
-  min-width: 200px;
+  top: 5px;
+  left: 5px;
+  padding: 8px 10px;
+  min-width: 140px;
   z-index: 100;
-  background: rgba(11, 17, 14, 0.9); /* Darker to obscure the grid */
+  background: rgba(11, 17, 14, 0.9);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+@media (min-width: 768px) {
+  .hud { top: 20px; left: 20px; padding: 15px; min-width: 200px; }
 }
 
 .hud-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+  gap: 10px;
 }
 
-.hud-row:last-child {
-  margin-bottom: 0;
+@media (min-width: 768px) {
+  .hud-row { font-size: 0.95rem; margin-bottom: 8px; }
 }
 
-.hud-row .name {
-  font-weight: 600;
-}
-
-.hud-row .stats {
-  color: #fff; /* Brighter for readability */
-}
+.hud-row:last-child { margin-bottom: 0; }
+.hud-row .name { font-weight: 600; }
+.hud-row .stats { color: #fff; }
 
 .round-info {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 15px;
-  font-size: 1.2rem;
+  top: 5px;
+  right: 5px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
   font-weight: bold;
   z-index: 100;
   background: rgba(11, 17, 14, 0.9);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+@media (min-width: 768px) {
+  .round-info { top: 20px; right: 20px; padding: 15px; font-size: 1.2rem; }
 }
 
 /* Turn Indicator */
 .turn-indicator {
   position: absolute;
-  font-size: 0.8rem;
-  padding: 4px 8px;
+  font-size: 0.7rem;
+  padding: 2px 6px;
   background: var(--accent);
   color: #fff;
   border-radius: 12px;
   animation: pulseGlow 1.5s infinite;
+  white-space: nowrap;
+  z-index: 50;
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
-.turn-p1 { bottom: 160px; left: 50%; transform: translateX(-50%); }
-.turn-b1 { left: 180px; top: 50%; transform: translateY(-50%); }
-.turn-b2 { top: 160px; left: 50%; transform: translateX(-50%); }
-.turn-b3 { right: 180px; top: 50%; transform: translateY(-50%); }
+@media (min-width: 768px) {
+  .turn-indicator { font-size: 0.8rem; padding: 4px 8px; }
+}
+
+.turn-p1 { top: -25px; left: 50%; transform: translateX(-50%); }
+.turn-b1 { right: -40px; top: 50%; transform: translateY(-50%); }
+.turn-b2 { bottom: -25px; left: 50%; transform: translateX(-50%); }
+.turn-b3 { left: -40px; top: 50%; transform: translateY(-50%); }
+
+@media (min-width: 768px) {
+  .turn-p1 { top: -35px; }
+  .turn-b1 { right: -60px; }
+  .turn-b2 { bottom: -35px; }
+  .turn-b3 { left: -60px; }
+}
