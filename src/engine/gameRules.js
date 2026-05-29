@@ -1,28 +1,19 @@
 // Call Break game rules and validations
 
-// Determines the winning card in a trick
 export const determineTrickWinner = (trickCards) => {
   if (trickCards.length === 0) return null;
 
-  const leadSuit = trickCards[0].card.suit;
-  let winningCard = trickCards[0];
+  // The active/winning suit is the suit of the most recently played card
+  const finalSuit = trickCards[trickCards.length - 1].card.suit;
+  
+  let winningCard = null;
 
-  for (let i = 1; i < trickCards.length; i++) {
+  for (let i = 0; i < trickCards.length; i++) {
     const current = trickCards[i];
     
-    // If current is a spade (trump) and winning card is not a spade
-    if (current.card.suit === 'Spades' && winningCard.card.suit !== 'Spades') {
-      winningCard = current;
-    }
-    // If both are spades, higher value wins
-    else if (current.card.suit === 'Spades' && winningCard.card.suit === 'Spades') {
-      if (current.card.value > winningCard.card.value) {
-        winningCard = current;
-      }
-    }
-    // If neither are spades, but current matches lead suit and is higher
-    else if (current.card.suit === leadSuit && winningCard.card.suit === leadSuit) {
-      if (current.card.value > winningCard.card.value) {
+    // Only cards matching the final active suit can win
+    if (current.card.suit === finalSuit) {
+      if (!winningCard || current.card.value > winningCard.card.value) {
         winningCard = current;
       }
     }
@@ -36,46 +27,28 @@ export const getValidCards = (currentTrickCards, playerHand) => {
   // If first to play, any card is valid
   if (currentTrickCards.length === 0) return playerHand;
 
-  const leadSuit = currentTrickCards[0].card.suit;
+  // The required suit is dynamically set by the last card played
+  const currentRequiredSuit = currentTrickCards[currentTrickCards.length - 1].card.suit;
   const currentWinner = determineTrickWinner(currentTrickCards);
 
-  // Does the player have the lead suit?
-  const cardsOfLeadSuit = playerHand.filter(c => c.suit === leadSuit);
+  // Does the player have the required suit?
+  const cardsOfRequiredSuit = playerHand.filter(c => c.suit === currentRequiredSuit);
 
-  if (cardsOfLeadSuit.length > 0) {
-    // Must follow suit
-    // Must try to win if possible
-    if (currentWinner.card.suit === leadSuit) {
+  if (cardsOfRequiredSuit.length > 0) {
+    // Must follow the required suit
+    // Must try to beat the current winner if the winner's suit is the required suit
+    if (currentWinner && currentWinner.card.suit === currentRequiredSuit) {
       const winningValue = currentWinner.card.value;
-      const higherCards = cardsOfLeadSuit.filter(c => c.value > winningValue);
+      const higherCards = cardsOfRequiredSuit.filter(c => c.value > winningValue);
       if (higherCards.length > 0) {
         return higherCards; // Obligation to beat the current highest card
       }
     }
-    // Either a spade is winning, or we can't beat the highest lead suit card
-    return cardsOfLeadSuit;
+    // Cannot beat, but must follow suit
+    return cardsOfRequiredSuit;
   }
 
-  // If player doesn't have the lead suit, check if they have a Spade
-  const spades = playerHand.filter(c => c.suit === 'Spades');
-
-  if (spades.length > 0) {
-    // Must play a spade
-    let winningSpadeValue = 0;
-    if (currentWinner.card.suit === 'Spades') {
-      winningSpadeValue = currentWinner.card.value;
-    }
-    
-    const higherSpades = spades.filter(c => c.value > winningSpadeValue);
-    if (higherSpades.length > 0) {
-      return higherSpades; // Obligation to beat the current winning spade
-    }
-    
-    // We can't beat the winning spade, but must still play a spade
-    return spades;
-  }
-
-  // If they have neither the lead suit nor spades, they can play any card
+  // If they don't have the required suit, they can play any card (which will change the active suit)
   return playerHand;
 };
 

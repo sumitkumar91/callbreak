@@ -1,13 +1,11 @@
 import { getValidCards, determineTrickWinner } from './gameRules';
 
-// Simple heuristic to bid based on high cards and spades
+// Simple heuristic to bid based on high cards
 export const calculateBotBid = (hand) => {
   let bid = 0;
   hand.forEach(card => {
-    // Count Aces and Kings as likely winners
+    // Count Aces and Kings as likely winners across all suits
     if (card.value >= 13) bid++;
-    // Count Spades above 10
-    else if (card.suit === 'Spades' && card.value >= 11) bid++;
   });
   
   // Minimum bid is 1
@@ -20,21 +18,13 @@ export const determineBotPlay = (botId, hand, currentTrickCards) => {
   
   // Sort valid cards from lowest to highest value
   const sortedValid = [...validCards].sort((a, b) => {
-    if (a.suit === 'Spades' && b.suit !== 'Spades') return 1;
-    if (a.suit !== 'Spades' && b.suit === 'Spades') return -1;
     return a.value - b.value;
   });
 
   if (currentTrickCards.length === 0) {
-    // Bot is leading. Play a safe low non-spade, or highest card if they have lots of spades.
-    // For simplicity, lead with the highest non-spade, or lowest spade.
-    const nonSpades = sortedValid.filter(c => c.suit !== 'Spades');
-    if (nonSpades.length > 0) {
-       // lead highest non-spade
-       return nonSpades[nonSpades.length - 1];
-    }
-    // Only spades left, play lowest
-    return sortedValid[0];
+    // Bot is leading. Lead with the highest card they have for better chance to win, 
+    // or lowest if they have no good cards. We'll simply lead the highest card.
+    return sortedValid[sortedValid.length - 1];
   }
 
   // Bot is not leading
